@@ -95,6 +95,27 @@ export const useEventOperations = (editing: boolean, onSave?: () => void) => {
     }
   };
 
+  // 직접 수정용 (드래그 앤 드롭)
+  const updateEvent = async (eventData: Event) => {
+    try {
+      const response = await fetch(`/api/events/${eventData.id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(eventData),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to update event');
+      }
+
+      await fetchEvents();
+      enqueueSnackbar(SUCCESS_MESSAGES.EVENT_UPDATED, { variant: 'success' });
+    } catch (error) {
+      console.error('Error updating event:', error);
+      enqueueSnackbar(ERROR_MESSAGES.SAVE_FAILED, { variant: 'error' });
+    }
+  };
+
   const createRepeatEvent = async (eventData: EventForm) => {
     try {
       const newEvents = generateRepeatEvents(eventData);
@@ -127,5 +148,5 @@ export const useEventOperations = (editing: boolean, onSave?: () => void) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  return { events, fetchEvents, saveEvent, deleteEvent, createRepeatEvent };
+  return { events, fetchEvents, saveEvent, updateEvent, deleteEvent, createRepeatEvent };
 };
