@@ -62,6 +62,7 @@ interface WeekViewProps {
   notifiedEvents: string[];
   onDragEnd: (_event: DragEndEvent) => void;
   onDragMove: (_event: DragMoveEvent) => void;
+  onClickEvent: (date: string) => void;
 }
 
 const WeekView = ({
@@ -70,6 +71,7 @@ const WeekView = ({
   notifiedEvents,
   onDragEnd,
   onDragMove,
+  onClickEvent,
 }: WeekViewProps) => {
   // DnD 컴포넌트
   const DraggableEvent = ({ event, children }: { event: Event; children: React.ReactNode }) => {
@@ -109,6 +111,9 @@ const WeekView = ({
           overflow: 'hidden',
           backgroundColor: isOver ? '#e8eaf6' : 'inherit',
           transition: '0.2s',
+        }}
+        onClick={() => {
+          onClickEvent(dateString);
         }}
       >
         {children}

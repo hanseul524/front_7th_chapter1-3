@@ -205,6 +205,14 @@ function App() {
     console.log('Drag move:', event);
   };
 
+  const handleClickEvent = (dateString: string) => {
+    if (!dateString) return;
+    // 클릭 시 폼데이터 초기화
+    eventFormData.setEditingEvent(null);
+    eventFormData.resetForm();
+    eventFormData.setDate(dateString);
+  };
+
   return (
     <Box sx={{ width: '100%', height: '100vh', margin: 'auto', p: 5 }}>
       <Stack direction="row" spacing={6} sx={{ height: '100%' }}>
@@ -220,6 +228,7 @@ function App() {
           holidays={holidays}
           onDragEnd={handleDragEnd}
           onDragMove={handleDragMove}
+          onClickEvent={handleClickEvent}
         />
 
         <EventListPanel

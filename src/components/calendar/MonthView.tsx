@@ -42,6 +42,7 @@ interface MonthViewProps {
   holidays: Record<string, string>;
   onDragEnd: (event: DragEndEvent) => void;
   onDragMove: (event: DragMoveEvent) => void;
+  onClickEvent: (date: string) => void;
 }
 
 const MonthView = ({
@@ -51,6 +52,7 @@ const MonthView = ({
   holidays,
   onDragEnd,
   onDragMove,
+  onClickEvent,
 }: MonthViewProps) => {
   // DnD 컴포넌트
   const DraggableEvent = ({ event, children }: { event: Event; children: React.ReactNode }) => {
@@ -91,6 +93,9 @@ const MonthView = ({
           position: 'relative',
           backgroundColor: isOver ? '#e8eaf6' : 'inherit',
           transition: '0.2s',
+        }}
+        onClick={() => {
+          onClickEvent(dateString);
         }}
       >
         {children}

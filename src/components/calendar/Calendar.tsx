@@ -16,6 +16,7 @@ interface CalendarProps {
   holidays: Record<string, string>;
   onDragEnd: (_event: DragEndEvent) => void;
   onDragMove: (_event: DragMoveEvent) => void;
+  onClickEvent: (date: string) => void;
 }
 
 const Calendar = ({
@@ -28,6 +29,7 @@ const Calendar = ({
   holidays,
   onDragEnd,
   onDragMove,
+  onClickEvent,
 }: CalendarProps) => {
   return (
     <Stack flex={1} spacing={5}>
@@ -62,6 +64,7 @@ const Calendar = ({
           notifiedEvents={notifiedEvents}
           onDragEnd={onDragEnd}
           onDragMove={onDragMove}
+          onClickEvent={onClickEvent}
         />
       )}
       {view === 'month' && (
@@ -72,6 +75,7 @@ const Calendar = ({
           holidays={holidays}
           onDragEnd={onDragEnd}
           onDragMove={onDragMove}
+          onClickEvent={onClickEvent}
         />
       )}
     </Stack>
