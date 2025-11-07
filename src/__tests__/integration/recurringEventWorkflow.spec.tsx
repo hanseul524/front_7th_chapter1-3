@@ -386,4 +386,250 @@ describe('반복 일정 워크플로우 통합 테스트', () => {
       expect(unchangedEventList.getAllByText('매일 회의')).toHaveLength(2);
     });
   });
+
+  describe('반복 일정 부분 수정/삭제 시 나머지 일정 검증 (예외 케이스)', () => {
+    it('하나의 반복 일정만 수정하면 나머지 반복 일정은 원래 데이터를 유지한다', async () => {
+      setupMockHandlerUpdating([
+        {
+          id: '1',
+          title: '팀 미팅',
+          date: '2025-10-15',
+          startTime: '10:00',
+          endTime: '11:00',
+          description: '주간 팀 미팅',
+          location: '회의실 B',
+          category: '업무',
+          repeat: { type: 'daily', interval: 1, endDate: '2025-10-17' },
+          notificationTime: 10,
+        },
+        {
+          id: '2',
+          title: '팀 미팅',
+          date: '2025-10-16',
+          startTime: '10:00',
+          endTime: '11:00',
+          description: '주간 팀 미팅',
+          location: '회의실 B',
+          category: '업무',
+          repeat: { type: 'daily', interval: 1, endDate: '2025-10-17' },
+          notificationTime: 10,
+        },
+        {
+          id: '3',
+          title: '팀 미팅',
+          date: '2025-10-17',
+          startTime: '10:00',
+          endTime: '11:00',
+          description: '주간 팀 미팅',
+          location: '회의실 B',
+          category: '업무',
+          repeat: { type: 'daily', interval: 1, endDate: '2025-10-17' },
+          notificationTime: 10,
+        },
+      ]);
+
+      const { user } = setup(<App />);
+      await screen.findByText('일정 로딩 완료!');
+
+      // 초기 상태: 3개의 반복 일정 확인
+      const eventList = within(screen.getByTestId('event-list'));
+      const initialEvents = eventList.getAllByText('팀 미팅');
+      expect(initialEvents).toHaveLength(3);
+
+      // 두 번째 반복 일정만 편집 (중간 것 선택)
+      const editButtons = await screen.findAllByLabelText('Edit event');
+      await user.click(editButtons[1]);
+
+      await screen.findByText('해당 일정만 수정하시겠어요?', {}, { timeout: 3000 });
+      const yesButton = await screen.findByText('예');
+      await user.click(yesButton);
+
+      // 제목만 변경
+      const titleInput = screen.getByLabelText('제목');
+      await user.click(titleInput);
+      await user.keyboard('{Control>}a{/Control}');
+      await user.keyboard('{delete}');
+      await user.type(titleInput, '변경된 미팅');
+      await user.click(screen.getByTestId('event-submit-button'));
+
+      // 결과 확인: 하나는 변경되고 나머지 2개는 원본 유지
+      const updatedEventList = within(screen.getByTestId('event-list'));
+      expect(updatedEventList.getByText('변경된 미팅')).toBeInTheDocument();
+      expect(updatedEventList.getAllByText('팀 미팅')).toHaveLength(2);
+
+      // 나머지 일정들의 상세 정보 확인 (첫 번째와 세 번째)
+      const remainingEvents = updatedEventList.getAllByText('팀 미팅');
+      expect(remainingEvents).toHaveLength(2);
+
+      // 원본 일정의 시간, 위치 정보가 유지되는지 확인
+      expect(updatedEventList.getAllByText(/10:00 - 11:00/)).toHaveLength(3); // 모든 일정의 시간
+      expect(updatedEventList.getAllByText(/회의실 B/)).toHaveLength(2); // 원본 2개의 위치
+    });
+
+    it('하나의 반복 일정만 삭제하면 나머지 반복 일정의 모든 속성이 유지된다', async () => {
+      setupMockHandlerRecurringListDelete([
+        {
+          id: '1',
+          title: '프로젝트 회의',
+          date: '2025-10-20',
+          startTime: '15:00',
+          endTime: '16:00',
+          description: '프로젝트 진행 상황 공유',
+          location: '회의실 C',
+          category: '업무',
+          repeat: { type: 'daily', interval: 1, endDate: '2025-10-22' },
+          notificationTime: 15,
+        },
+        {
+          id: '2',
+          title: '프로젝트 회의',
+          date: '2025-10-21',
+          startTime: '15:00',
+          endTime: '16:00',
+          description: '프로젝트 진행 상황 공유',
+          location: '회의실 C',
+          category: '업무',
+          repeat: { type: 'daily', interval: 1, endDate: '2025-10-22' },
+          notificationTime: 15,
+        },
+        {
+          id: '3',
+          title: '프로젝트 회의',
+          date: '2025-10-22',
+          startTime: '15:00',
+          endTime: '16:00',
+          description: '프로젝트 진행 상황 공유',
+          location: '회의실 C',
+          category: '업무',
+          repeat: { type: 'daily', interval: 1, endDate: '2025-10-22' },
+          notificationTime: 15,
+        },
+      ]);
+
+      const { user } = setup(<App />);
+      await screen.findByText('일정 로딩 완료!');
+
+      // 초기 상태: 3개의 반복 일정 확인
+      const eventList = within(screen.getByTestId('event-list'));
+      const initialEvents = eventList.getAllByText('프로젝트 회의');
+      expect(initialEvents).toHaveLength(3);
+
+      // 첫 번째 반복 일정만 삭제
+      const deleteButtons = await screen.findAllByLabelText('Delete event');
+      await user.click(deleteButtons[0]);
+
+      await screen.findByText('해당 일정만 삭제하시겠어요?', {}, { timeout: 3000 });
+
+      // "예" 버튼 선택 (단일 삭제)
+      const yesButton = await screen.findByText('예');
+      await user.click(yesButton);
+      await screen.findByText('일정이 삭제되었습니다');
+
+      // 결과 확인: 2개의 일정이 남아있음
+      const updatedEventList = within(screen.getByTestId('event-list'));
+      const remainingEvents = updatedEventList.getAllByText('프로젝트 회의');
+      expect(remainingEvents).toHaveLength(2);
+
+      // 나머지 일정들의 원본 속성 유지 확인
+      expect(updatedEventList.getAllByText(/15:00 - 16:00/)).toHaveLength(2);
+      expect(updatedEventList.getAllByText(/회의실 C/)).toHaveLength(2);
+
+      // 반복 아이콘이 여전히 존재하는지 확인 (반복 속성 유지)
+      const repeatIcons = updatedEventList.getAllByTestId('RepeatIcon');
+      expect(repeatIcons.length).toBeGreaterThanOrEqual(2);
+    });
+
+    it('여러 반복 일정 중 중간 일정을 수정해도 앞뒤 일정은 영향받지 않는다', async () => {
+      setupMockHandlerUpdating([
+        {
+          id: '1',
+          title: '일일 스탠드업',
+          date: '2025-11-01',
+          startTime: '09:00',
+          endTime: '09:30',
+          description: '데일리 스크럼',
+          location: '온라인',
+          category: '업무',
+          repeat: { type: 'daily', interval: 1, endDate: '2025-11-04' },
+          notificationTime: 5,
+        },
+        {
+          id: '2',
+          title: '일일 스탠드업',
+          date: '2025-11-02',
+          startTime: '09:00',
+          endTime: '09:30',
+          description: '데일리 스크럼',
+          location: '온라인',
+          category: '업무',
+          repeat: { type: 'daily', interval: 1, endDate: '2025-11-04' },
+          notificationTime: 5,
+        },
+        {
+          id: '3',
+          title: '일일 스탠드업',
+          date: '2025-11-03',
+          startTime: '09:00',
+          endTime: '09:30',
+          description: '데일리 스크럼',
+          location: '온라인',
+          category: '업무',
+          repeat: { type: 'daily', interval: 1, endDate: '2025-11-04' },
+          notificationTime: 5,
+        },
+        {
+          id: '4',
+          title: '일일 스탠드업',
+          date: '2025-11-04',
+          startTime: '09:00',
+          endTime: '09:30',
+          description: '데일리 스크럼',
+          location: '온라인',
+          category: '업무',
+          repeat: { type: 'daily', interval: 1, endDate: '2025-11-04' },
+          notificationTime: 5,
+        },
+      ]);
+
+      const { user } = setup(<App />);
+      await screen.findByText('일정 로딩 완료!');
+
+      // 초기 상태: 4개의 반복 일정 확인
+      const eventList = within(screen.getByTestId('event-list'));
+      expect(eventList.getAllByText('일일 스탠드업')).toHaveLength(4);
+
+      // 두 번째 일정 편집 (중간 일정)
+      const editButtons = await screen.findAllByLabelText('Edit event');
+      await user.click(editButtons[1]);
+
+      await screen.findByText('해당 일정만 수정하시겠어요?', {}, { timeout: 3000 });
+      const yesButton = await screen.findByText('예');
+      await user.click(yesButton);
+
+      // 제목과 설명 변경
+      const titleInput = screen.getByLabelText('제목');
+      await user.click(titleInput);
+      await user.keyboard('{Control>}a{/Control}');
+      await user.keyboard('{delete}');
+      await user.type(titleInput, '긴급 미팅');
+
+      const descriptionInput = screen.getByLabelText('설명');
+      await user.click(descriptionInput);
+      await user.keyboard('{Control>}a{/Control}');
+      await user.keyboard('{delete}');
+      await user.type(descriptionInput, '긴급 이슈 논의');
+
+      await user.click(screen.getByTestId('event-submit-button'));
+
+      // 결과 확인
+      const updatedEventList = within(screen.getByTestId('event-list'));
+
+      // 하나는 변경되고 3개는 원본 유지
+      expect(updatedEventList.getByText('긴급 미팅')).toBeInTheDocument();
+      expect(updatedEventList.getAllByText('일일 스탠드업')).toHaveLength(3);
+
+      // 나머지 일정의 위치 정보 확인
+      expect(updatedEventList.getAllByText(/온라인/)).toHaveLength(3);
+    });
+  });
 });
