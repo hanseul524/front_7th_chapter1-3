@@ -16,14 +16,14 @@ export default defineConfig({
     timeout: 5000,
   },
 
-  // 모든 테스트를 병렬로 실행
-  fullyParallel: true,
+  // 모든 테스트를 병렬로 실행 (E2E는 순차 실행)
+  fullyParallel: false,
 
   // CI 환경에서만 실패 시 재시도
   retries: process.env.CI ? 2 : 0,
 
-  // 워커 수 (병렬 실행 프로세스 수)
-  workers: process.env.CI ? 1 : undefined,
+  // 워커 수 (E2E는 순차 실행으로 데이터 격리)
+  workers: 1,
 
   // 리포터 설정
   reporter: [['html'], ['list']],
@@ -52,30 +52,32 @@ export default defineConfig({
   },
 
   // 테스트 실행 전 개발 서버 자동 시작
-  webServer: {
-    command: 'pnpm run dev',
-    url: 'http://localhost:5173',
-    reuseExistingServer: !process.env.CI,
-    timeout: 120 * 1000,
-    stdout: 'ignore',
-    stderr: 'pipe',
-  },
+  webServer: [
+    // 백엔드 서버 (E2E 전용 DB 사용)
+    {
+      command: 'TEST_ENV=e2e node server.js',
+      url: 'http://localhost:3000/api/events',
+      reuseExistingServer: !process.env.CI,
+      timeout: 120 * 1000,
+      stdout: 'ignore',
+      stderr: 'pipe',
+    },
+    // 프론트엔드 서버
+    {
+      command: 'pnpm run dev',
+      url: 'http://localhost:5173',
+      reuseExistingServer: !process.env.CI,
+      timeout: 120 * 1000,
+      stdout: 'ignore',
+      stderr: 'pipe',
+    },
+  ],
 
-  // 테스트할 브라우저 설정
+  // 테스트할 브라우저 설정 (E2E는 chromium만 사용)
   projects: [
     {
       name: 'chromium',
       use: { ...devices['Desktop Chrome'] },
-    },
-
-    {
-      name: 'firefox',
-      use: { ...devices['Desktop Firefox'] },
-    },
-
-    {
-      name: 'webkit',
-      use: { ...devices['Desktop Safari'] },
     },
   ],
 });
