@@ -8,3 +8,12 @@ node_modules
 /.local-browsers/
 /allure-results/
 /.allure/
+
+# E2E 테스트 데이터베이스 (매 테스트마다 초기화)
+src/__mocks__/response/e2e.json
+*storybook.log
+storybook-static
+
+# Environment variables (보안: Chromatic 토큰 등)
+.env
+.env.local

@@ -56,7 +56,7 @@ export const AddMode: Story = {
 export const AddModeWithData: Story = {
   args: {
     editingEvent: null,
-    title: '팀 미팅',
+    title: '팀 미팅 (시각적 회귀 테스트)',
     setTitle: fn(),
     date: '2024-11-15',
     setDate: fn(),
