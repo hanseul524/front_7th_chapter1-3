@@ -50,16 +50,21 @@ test.describe('검색 및 필터링 워크플로우', () => {
   });
 
   test('검색어를 지우면 모든 일정이 다시 표시되어야 함', async ({ page }) => {
-    // Given: 일정 생성
-    const events = ['회의 A', '회의 B', '미팅 C'];
+    // Given: 일정 생성 (다른 시간대로 생성하여 겹침 방지)
+    const events = [
+      { title: '회의 A', time: '10:00-11:00' },
+      { title: '회의 B', time: '13:00-14:00' },
+      { title: '미팅 C', time: '15:00-16:00' },
+    ];
 
-    for (const title of events) {
-      await page.locator('#title').fill(title);
+    for (const event of events) {
+      await page.locator('#title').fill(event.title);
       await page.locator('#date').fill('2025-11-25');
-      await page.locator('#start-time').fill('10:00');
-      await page.locator('#end-time').fill('11:00');
+      const [startTime, endTime] = event.time.split('-');
+      await page.locator('#start-time').fill(startTime);
+      await page.locator('#end-time').fill(endTime);
       await page.getByTestId('event-submit-button').click();
-      await page.waitForTimeout(300);
+      await page.waitForTimeout(500);
     }
 
     const searchInput = page.locator('#search');
@@ -180,22 +185,22 @@ test.describe('검색 및 필터링 워크플로우', () => {
   });
 
   test('카테고리별로 일정을 필터링할 수 있어야 함', async ({ page }) => {
-    // Given: 다양한 카테고리의 일정 생성
     const categories = [
-      { name: '업무', title: '업무 회의' },
-      { name: '개인', title: '개인 약속' },
-      { name: '가족', title: '가족 모임' },
+      { name: '업무', title: '업무 회의', time: '10:00-11:00' },
+      { name: '개인', title: '개인 약속', time: '13:00-14:00' },
+      { name: '가족', title: '가족 모임', time: '15:00-16:00' },
     ];
 
     for (const category of categories) {
       await page.locator('#title').fill(category.title);
       await page.locator('#date').fill('2025-11-01');
-      await page.locator('#start-time').fill('10:00');
-      await page.locator('#end-time').fill('11:00');
+      const [startTime, endTime] = category.time.split('-');
+      await page.locator('#start-time').fill(startTime);
+      await page.locator('#end-time').fill(endTime);
       await page.locator('#category').click();
       await page.getByRole('option', { name: category.name }).click();
       await page.getByTestId('event-submit-button').click();
-      await page.waitForTimeout(300);
+      await page.waitForTimeout(500);
     }
 
     const eventList = page.getByTestId('event-list');
@@ -255,26 +260,27 @@ test.describe('검색 및 필터링 워크플로우', () => {
     await searchInput.fill('운동');
 
     // Then: 반복 일정이 검색되어야 함
-    await expect(eventList.getByText('매일 운동')).toBeVisible({ timeout: 10000 });
+    await expect(eventList.getByText('매일 운동').first()).toBeVisible({ timeout: 10000 });
   });
 
   test('여러 조건을 동시에 적용하여 필터링할 수 있어야 함', async ({ page }) => {
-    // Given: 다양한 일정 생성
+    // Given: 다양한 일정 생성 (다른 시간대로 겹침 방지)
     const events = [
-      { title: '업무 회의', category: '업무', date: '2025-11-20' },
-      { title: '개인 회의', category: '개인', date: '2025-11-20' },
-      { title: '업무 미팅', category: '업무', date: '2025-11-21' },
+      { title: '업무 회의', category: '업무', date: '2025-11-20', time: '10:00-11:00' },
+      { title: '개인 회의', category: '개인', date: '2025-11-20', time: '13:00-14:00' },
+      { title: '업무 미팅', category: '업무', date: '2025-11-21', time: '10:00-11:00' },
     ];
 
     for (const event of events) {
       await page.locator('#title').fill(event.title);
       await page.locator('#date').fill(event.date);
-      await page.locator('#start-time').fill('10:00');
-      await page.locator('#end-time').fill('11:00');
+      const [startTime, endTime] = event.time.split('-');
+      await page.locator('#start-time').fill(startTime);
+      await page.locator('#end-time').fill(endTime);
       await page.locator('#category').click();
       await page.getByRole('option', { name: event.category }).click();
       await page.getByTestId('event-submit-button').click();
-      await page.waitForTimeout(300);
+      await page.waitForTimeout(500);
     }
 
     const searchInput = page.locator('#search');
@@ -340,16 +346,21 @@ test.describe('검색 및 필터링 워크플로우', () => {
   });
 
   test('빈 검색어로는 모든 일정이 표시되어야 함', async ({ page }) => {
-    // Given: 여러 일정 생성
-    const titles = ['일정 1', '일정 2', '일정 3'];
+    // Given: 여러 일정 생성 (다른 시간대로 겹침 방지)
+    const events = [
+      { title: '일정 1', time: '10:00-11:00' },
+      { title: '일정 2', time: '13:00-14:00' },
+      { title: '일정 3', time: '15:00-16:00' },
+    ];
 
-    for (const title of titles) {
-      await page.locator('#title').fill(title);
+    for (const event of events) {
+      await page.locator('#title').fill(event.title);
       await page.locator('#date').fill('2025-11-30');
-      await page.locator('#start-time').fill('10:00');
-      await page.locator('#end-time').fill('11:00');
+      const [startTime, endTime] = event.time.split('-');
+      await page.locator('#start-time').fill(startTime);
+      await page.locator('#end-time').fill(endTime);
       await page.getByTestId('event-submit-button').click();
-      await page.waitForTimeout(300);
+      await page.waitForTimeout(500);
     }
 
     const searchInput = page.locator('#search');
@@ -359,8 +370,8 @@ test.describe('검색 및 필터링 워크플로우', () => {
     await searchInput.fill('');
 
     // Then: 모든 일정 표시
-    for (const title of titles) {
-      await expect(eventList.getByText(title)).toBeVisible({ timeout: 10000 });
+    for (const event of events) {
+      await expect(eventList.getByText(event.title)).toBeVisible({ timeout: 10000 });
     }
   });
 });
