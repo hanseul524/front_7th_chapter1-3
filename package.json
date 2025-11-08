@@ -74,5 +74,10 @@
     "vite": "^7.0.2",
     "vite-plugin-eslint": "^1.8.1",
     "vitest": "^3.2.4"
+  },
+    "pnpm": {
+    "overrides": {
+      "playwright": "npm:@playwright/test@1.56.1"
+    }
   }
 }
