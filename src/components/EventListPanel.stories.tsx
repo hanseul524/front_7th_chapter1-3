@@ -363,7 +363,8 @@ export const LongTitles: Story = {
     filteredEvents: [
       {
         id: '1',
-        title: '매우 긴 제목을 가진 일정입니다. 이 일정은 제목이 너무 길어서 UI에서 어떻게 표시되는지 테스트하기 위한 것입니다',
+        title:
+          '매우 긴 제목을 가진 일정입니다. 이 일정은 제목이 너무 길어서 UI에서 어떻게 표시되는지 테스트하기 위한 것입니다',
         date: '2024-11-15',
         startTime: '10:00',
         endTime: '11:00',
@@ -375,7 +376,8 @@ export const LongTitles: Story = {
       },
       {
         id: '2',
-        title: '또 다른 매우 긴 제목의 일정으로 UI 렌더링 및 텍스트 오버플로우 처리를 확인하기 위한 시각적 회귀 테스트용 일정',
+        title:
+          '또 다른 매우 긴 제목의 일정으로 UI 렌더링 및 텍스트 오버플로우 처리를 확인하기 위한 시각적 회귀 테스트용 일정',
         date: '2024-11-15',
         startTime: '14:00',
         endTime: '15:00',
@@ -424,7 +426,8 @@ export const LongLocations: Story = {
         startTime: '10:00',
         endTime: '11:00',
         description: '먼 곳',
-        location: '대한민국 서울특별시 강남구 테헤란로 123번길 45, 매우 긴 이름을 가진 빌딩 4층 회의실 A호',
+        location:
+          '대한민국 서울특별시 강남구 테헤란로 123번길 45, 매우 긴 이름을 가진 빌딩 4층 회의실 A호',
         category: '업무',
         repeat: { type: 'none', interval: 0 },
         notificationTime: 10,
@@ -436,7 +439,8 @@ export const LongLocations: Story = {
         startTime: '09:00',
         endTime: '10:00',
         description: '화상 회의',
-        location: 'United States of America, California, San Francisco, Market Street 123, Building 456, Floor 7, Conference Room Alpha',
+        location:
+          'United States of America, California, San Francisco, Market Street 123, Building 456, Floor 7, Conference Room Alpha',
         category: '업무',
         repeat: { type: 'none', interval: 0 },
         notificationTime: 60,
@@ -457,8 +461,12 @@ export const AllFieldsLong: Story = {
         date: '2024-11-15',
         startTime: '10:00',
         endTime: '11:00',
-        description: '매우 상세하고 긴 설명입니다. 이 일정은 모든 정보가 상세하게 작성되어 있어서 UI에서 어떻게 표시되는지 확인하기 위한 테스트용 일정입니다. '.repeat(20),
-        location: '대한민국 서울특별시 강남구 테헤란로 123번길 45, 매우 긴 이름을 가진 빌딩의 4층에 위치한 대형 회의실 A호',
+        description:
+          '매우 상세하고 긴 설명입니다. 이 일정은 모든 정보가 상세하게 작성되어 있어서 UI에서 어떻게 표시되는지 확인하기 위한 테스트용 일정입니다. '.repeat(
+            20
+          ),
+        location:
+          '대한민국 서울특별시 강남구 테헤란로 123번길 45, 매우 긴 이름을 가진 빌딩의 4층에 위치한 대형 회의실 A호',
         category: '업무',
         repeat: { type: 'weekly', interval: 1, endDate: '2024-12-31' },
         notificationTime: 1440,

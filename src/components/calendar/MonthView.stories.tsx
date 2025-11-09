@@ -193,4 +193,3 @@ export const BusyDay: Story = {
     holidays: {},
   },
 };
-

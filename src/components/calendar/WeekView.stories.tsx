@@ -83,7 +83,6 @@ export const Default: Story = {
     currentDate: new Date('2024-11-15'),
     filteredEvents: mockEvents,
     notifiedEvents: [],
-    holidays: {},
   },
 };
 
@@ -93,7 +92,6 @@ export const Empty: Story = {
     currentDate: new Date('2024-11-15'),
     filteredEvents: [],
     notifiedEvents: [],
-    holidays: {},
   },
 };
 
@@ -103,7 +101,6 @@ export const WithNotifications: Story = {
     currentDate: new Date('2024-11-15'),
     filteredEvents: mockEvents,
     notifiedEvents: ['1', '3'],
-    holidays: {},
   },
 };
 
@@ -138,20 +135,6 @@ export const WithWeekend: Story = {
       },
     ],
     notifiedEvents: [],
-    holidays: {},
-  },
-};
-
-// 공휴일이 있는 주
-export const WithHolidays: Story = {
-  args: {
-    currentDate: new Date('2024-11-15'),
-    filteredEvents: mockEvents,
-    notifiedEvents: [],
-    holidays: {
-      '2024-11-15': '광복절',
-      '2024-11-17': '일요일',
-    },
   },
 };
 
@@ -222,7 +205,5 @@ export const BusyDay: Story = {
       },
     ],
     notifiedEvents: ['1', '3'],
-    holidays: {},
   },
 };
-

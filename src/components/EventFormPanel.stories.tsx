@@ -214,7 +214,8 @@ export const AllFieldsFilled: Story = {
     handleEndTimeChange: fn(),
     startTimeError: null,
     endTimeError: null,
-    description: '매우 상세한 설명이 포함된 일정입니다. 이 일정은 모든 필드가 채워져 있어서 폼의 완성된 상태를 보여줍니다.',
+    description:
+      '매우 상세한 설명이 포함된 일정입니다. 이 일정은 모든 필드가 채워져 있어서 폼의 완성된 상태를 보여줍니다.',
     setDescription: fn(),
     location: '서울특별시 강남구 테헤란로 123, 빌딩 4층 회의실 A',
     setLocation: fn(),
@@ -237,7 +238,8 @@ export const AllFieldsFilled: Story = {
 export const LongTextInputs: Story = {
   args: {
     editingEvent: null,
-    title: '매우 긴 제목을 가진 일정입니다. 제목이 너무 길면 UI에서 어떻게 처리되는지 테스트합니다. 이것은 시각적 회귀 테스트를 위한 예시입니다.',
+    title:
+      '매우 긴 제목을 가진 일정입니다. 제목이 너무 길면 UI에서 어떻게 처리되는지 테스트합니다. 이것은 시각적 회귀 테스트를 위한 예시입니다.',
     setTitle: fn(),
     date: '2024-11-15',
     setDate: fn(),
@@ -249,7 +251,8 @@ export const LongTextInputs: Story = {
     endTimeError: null,
     description: '매우 긴 설명입니다. '.repeat(50),
     setDescription: fn(),
-    location: '매우 긴 위치 정보입니다. 서울특별시 강남구 테헤란로 123번길 45, 건물명은 매우 긴 이름을 가진 빌딩, 4층 회의실 A호',
+    location:
+      '매우 긴 위치 정보입니다. 서울특별시 강남구 테헤란로 123번길 45, 건물명은 매우 긴 이름을 가진 빌딩, 4층 회의실 A호',
     setLocation: fn(),
     category: '업무',
     setCategory: fn(),

@@ -157,7 +157,8 @@ export const LongTitleOverlaps: Story = {
     overlappingEvents: [
       {
         id: '1',
-        title: '매우 긴 제목을 가진 일정입니다. 이 일정은 제목이 너무 길어서 UI에서 어떻게 표시되는지 테스트하기 위한 것입니다',
+        title:
+          '매우 긴 제목을 가진 일정입니다. 이 일정은 제목이 너무 길어서 UI에서 어떻게 표시되는지 테스트하기 위한 것입니다',
         date: '2024-11-15',
         startTime: '10:00',
         endTime: '11:30',
