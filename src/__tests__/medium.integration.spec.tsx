@@ -67,6 +67,23 @@ const saveSchedule = async (
 };
 
 describe('일정 CRUD 및 기본 기능', () => {
+  it('캘린더의 날짜 셀을 클릭하면 해당 날짜가 폼에 자동으로 채워진다', async () => {
+    const { user } = setup(<App />);
+
+    await screen.findByText('일정 로딩 완료!');
+
+    // 월간 뷰에서 15일 날짜 셀 찾기
+    const monthView = within(screen.getByTestId('month-view'));
+    const dateCells = monthView.getAllByText('15');
+
+    // 첫 번째 15일 셀 클릭 (현재 월의 15일)
+    await user.click(dateCells[0]);
+
+    const dateInput = screen.getByLabelText('날짜') as HTMLInputElement;
+    // 2025-10-15 형식으로 입력되어야 함
+    expect(dateInput.value).toMatch(/2025-\d{2}-15/);
+  });
+
   it('입력한 새로운 일정 정보에 맞춰 모든 필드가 이벤트 리스트에 정확히 저장된다.', async () => {
     setupMockHandlerCreation();
 
